@@ -1,0 +1,1359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LearnQuest - Adventure in Learning</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'quest-purple': '#8B5CF6',
+                        'quest-pink': '#EC4899',
+                        'quest-blue': '#3B82F6',
+                        'quest-green': '#10B981',
+                        'quest-orange': '#F59E0B',
+                        'quest-red': '#EF4444'
+                    },
+                    fontFamily: {
+                        'game': ['Comic Sans MS', 'cursive']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @keyframes bounce-in {
+            0% { transform: scale(0.3) rotate(-10deg); opacity: 0; }
+            50% { transform: scale(1.05) rotate(5deg); }
+            70% { transform: scale(0.9) rotate(-2deg); }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+        
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(139, 92, 246, 0.5); }
+            50% { box-shadow: 0 0 30px rgba(139, 92, 246, 0.8); }
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .bounce-in { animation: bounce-in 0.6s ease-out; }
+        .pulse-glow { animation: pulse-glow 2s infinite; }
+        .float { animation: float 3s ease-in-out infinite; }
+        
+        .gradient-text {
+            background: linear-gradient(45deg, #8B5CF6, #EC4899, #3B82F6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-purple-100 via-pink-50 to-blue-100 min-h-screen font-sans">
+    <!-- Navigation -->
+    <nav class="bg-white/90 backdrop-blur-sm shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-2">
+                    <div class="w-10 h-10 bg-gradient-to-r from-quest-purple to-quest-pink rounded-full flex items-center justify-center">
+                        <span class="text-white font-bold text-xl">🚀</span>
+                    </div>
+                    <h1 class="text-2xl font-bold gradient-text">LearnQuest</h1>
+                </div>
+                
+                <div class="hidden md:flex items-center space-x-6">
+                    <button onclick="showSection('dashboard')" class="nav-btn text-gray-700 hover:text-quest-purple transition-colors">Dashboard</button>
+                    <button onclick="showSection('lessons')" class="nav-btn text-gray-700 hover:text-quest-purple transition-colors">Lessons</button>
+                    <button onclick="showSection('quizzes')" class="nav-btn text-gray-700 hover:text-quest-purple transition-colors">Quizzes</button>
+                    <button onclick="showSection('community')" class="nav-btn text-gray-700 hover:text-quest-purple transition-colors">Community</button>
+                    <button onclick="showSection('games')" class="nav-btn text-gray-700 hover:text-quest-purple transition-colors">Games</button>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <div class="flex items-center space-x-2 bg-quest-orange/20 px-3 py-1 rounded-full">
+                        <span class="text-quest-orange">⭐</span>
+                        <span class="font-bold text-quest-orange" id="points">1,250</span>
+                    </div>
+                    <div class="relative group">
+                        <div class="w-8 h-8 bg-gradient-to-r from-quest-blue to-quest-green rounded-full flex items-center justify-center cursor-pointer" id="userAvatar">
+                            <span class="text-white text-sm">👤</span>
+                        </div>
+                        <div class="absolute right-0 top-10 bg-white rounded-xl shadow-lg p-4 min-w-48 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
+                            <div class="text-center mb-3">
+                                <div class="font-bold" id="userName">Alex</div>
+                                <div class="text-sm text-gray-600" id="userEmail">alex@student.com</div>
+                            </div>
+                            <hr class="my-2">
+                            <button onclick="logout()" class="w-full text-left px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+                                🚪 Sign Out
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <!-- Dashboard Section -->
+        <div id="dashboard" class="section">
+            <!-- Hero Section -->
+            <div class="text-center mb-12">
+                <h2 class="text-5xl font-bold gradient-text mb-4 float" id="welcomeMessage">Welcome back, Alex! 🎉</h2>
+                <p class="text-xl text-gray-600 mb-8">Ready for your next learning adventure?</p>
+                
+                <!-- Progress Overview -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                    <div class="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow">
+                        <div class="text-3xl mb-2">📚</div>
+                        <div class="text-2xl font-bold text-quest-purple">12</div>
+                        <div class="text-gray-600">Lessons Completed</div>
+                    </div>
+                    <div class="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow">
+                        <div class="text-3xl mb-2">🏆</div>
+                        <div class="text-2xl font-bold text-quest-pink">8</div>
+                        <div class="text-gray-600">Badges Earned</div>
+                    </div>
+                    <div class="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow">
+                        <div class="text-3xl mb-2">🔥</div>
+                        <div class="text-2xl font-bold text-quest-orange">15</div>
+                        <div class="text-gray-600">Day Streak</div>
+                    </div>
+                    <div class="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow">
+                        <div class="text-3xl mb-2">👥</div>
+                        <div class="text-2xl font-bold text-quest-green">3rd</div>
+                        <div class="text-gray-600">Class Rank</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Daily Quest -->
+            <div class="bg-gradient-to-r from-quest-purple to-quest-pink rounded-2xl p-8 text-white mb-8 pulse-glow">
+                <h3 class="text-2xl font-bold mb-4">🎯 Today's Quest</h3>
+                <p class="text-lg mb-4">Complete 3 Math lessons and earn the "Number Ninja" badge!</p>
+                <div class="flex items-center space-x-4">
+                    <div class="bg-white/20 rounded-full px-4 py-2">
+                        <span class="font-bold">Progress: 2/3</span>
+                    </div>
+                    <div class="bg-white/20 rounded-full px-4 py-2">
+                        <span class="font-bold">Reward: 500 XP</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Continue Learning -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="bg-white rounded-2xl p-6 shadow-lg">
+                    <h3 class="text-xl font-bold mb-4">📖 Continue Learning</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center space-x-4 p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors cursor-pointer" onclick="startLesson('algebra')">
+                            <div class="w-12 h-12 bg-quest-blue rounded-full flex items-center justify-center">
+                                <span class="text-white text-xl">📐</span>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-bold">Algebra Basics</h4>
+                                <p class="text-gray-600">Lesson 3: Solving Equations</p>
+                                <div class="w-full bg-gray-200 rounded-full h-2 mt-2">
+                                    <div class="bg-quest-blue h-2 rounded-full" style="width: 60%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center space-x-4 p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors cursor-pointer" onclick="startLesson('biology')">
+                            <div class="w-12 h-12 bg-quest-green rounded-full flex items-center justify-center">
+                                <span class="text-white text-xl">🧬</span>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-bold">Cell Biology</h4>
+                                <p class="text-gray-600">Lesson 1: Cell Structure</p>
+                                <div class="w-full bg-gray-200 rounded-full h-2 mt-2">
+                                    <div class="bg-quest-green h-2 rounded-full" style="width: 20%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Leaderboard -->
+                <div class="bg-white rounded-2xl p-6 shadow-lg">
+                    <h3 class="text-xl font-bold mb-4">🏆 Class Leaderboard</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center space-x-3 p-3 bg-yellow-50 rounded-xl">
+                            <span class="text-2xl">🥇</span>
+                            <div class="flex-1">
+                                <div class="font-bold">Sarah M.</div>
+                                <div class="text-sm text-gray-600">2,450 XP</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-3 p-3 bg-gray-50 rounded-xl">
+                            <span class="text-2xl">🥈</span>
+                            <div class="flex-1">
+                                <div class="font-bold">Mike R.</div>
+                                <div class="text-sm text-gray-600">1,890 XP</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-3 p-3 bg-quest-orange/10 rounded-xl">
+                            <span class="text-2xl">🥉</span>
+                            <div class="flex-1">
+                                <div class="font-bold">You (Alex)</div>
+                                <div class="text-sm text-gray-600">1,250 XP</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quizzes Section -->
+        <div id="quizzes" class="section hidden">
+            <h2 class="text-4xl font-bold gradient-text mb-8">📝 Level-Based Quizzes</h2>
+            
+            <!-- Level Selection -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <!-- Elementary Level -->
+                <div class="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all hover:scale-105 cursor-pointer" onclick="selectQuizLevel('elementary')">
+                    <div class="w-16 h-16 bg-gradient-to-r from-quest-green to-quest-blue rounded-full flex items-center justify-center mb-4 mx-auto">
+                        <span class="text-white text-2xl">🌱</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-center mb-2">Elementary</h3>
+                    <p class="text-gray-600 text-center mb-4">Grades K-5 • Basic concepts</p>
+                    <div class="text-center">
+                        <span class="bg-quest-green/20 text-quest-green px-3 py-1 rounded-full text-sm">15 Quizzes</span>
+                    </div>
+                </div>
+
+                <!-- High School Level -->
+                <div class="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all hover:scale-105 cursor-pointer" onclick="selectQuizLevel('highschool')">
+                    <div class="w-16 h-16 bg-gradient-to-r from-quest-blue to-quest-purple rounded-full flex items-center justify-center mb-4 mx-auto">
+                        <span class="text-white text-2xl">🎓</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-center mb-2">High School</h3>
+                    <p class="text-gray-600 text-center mb-4">Grades 9-12 • Advanced topics</p>
+                    <div class="text-center">
+                        <span class="bg-quest-blue/20 text-quest-blue px-3 py-1 rounded-full text-sm">20 Quizzes</span>
+                    </div>
+                </div>
+
+                <!-- Senior High Level -->
+                <div class="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all hover:scale-105 cursor-pointer" onclick="selectQuizLevel('seniorhigh')">
+                    <div class="w-16 h-16 bg-gradient-to-r from-quest-purple to-quest-pink rounded-full flex items-center justify-center mb-4 mx-auto">
+                        <span class="text-white text-2xl">🏆</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-center mb-2">Senior High</h3>
+                    <p class="text-gray-600 text-center mb-4">Grades 11-12 • Specialized</p>
+                    <div class="text-center">
+                        <span class="bg-quest-purple/20 text-quest-purple px-3 py-1 rounded-full text-sm">18 Quizzes</span>
+                    </div>
+                </div>
+
+                <!-- College Level -->
+                <div class="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all hover:scale-105 cursor-pointer" onclick="selectQuizLevel('college')">
+                    <div class="w-16 h-16 bg-gradient-to-r from-quest-pink to-quest-red rounded-full flex items-center justify-center mb-4 mx-auto">
+                        <span class="text-white text-2xl">🎯</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-center mb-2">College</h3>
+                    <p class="text-gray-600 text-center mb-4">University level • Expert</p>
+                    <div class="text-center">
+                        <span class="bg-quest-red/20 text-quest-red px-3 py-1 rounded-full text-sm">25 Quizzes</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quiz Categories for Selected Level -->
+            <div id="quizCategories" class="hidden">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-2xl font-bold" id="selectedLevelTitle">Elementary Quizzes</h3>
+                    <button onclick="document.getElementById('quizCategories').classList.add('hidden')" class="text-gray-500 hover:text-gray-700">← Back to Levels</button>
+                </div>
+                
+                <div id="quizList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Quiz items will be populated here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Lessons Section -->
+        <div id="lessons" class="section hidden">
+            <h2 class="text-4xl font-bold gradient-text mb-8">📚 Interactive Lessons</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Math Lesson -->
+                <div class="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all hover:scale-105 cursor-pointer" onclick="openLessonModal('math')">
+                    <div class="w-16 h-16 bg-quest-blue rounded-full flex items-center justify-center mb-4 mx-auto">
+                        <span class="text-white text-2xl">📐</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-center mb-2">Algebra Adventures</h3>
+                    <p class="text-gray-600 text-center mb-4">Master equations through interactive puzzles</p>
+                    <div class="flex justify-between items-center">
+                        <span class="bg-quest-blue/20 text-quest-blue px-3 py-1 rounded-full text-sm">12 Lessons</span>
+                        <span class="text-quest-orange font-bold">+200 XP</span>
+                    </div>
+                </div>
+
+                <!-- Science Lesson -->
+                <div class="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all hover:scale-105 cursor-pointer" onclick="openLessonModal('science')">
+                    <div class="w-16 h-16 bg-quest-green rounded-full flex items-center justify-center mb-4 mx-auto">
+                        <span class="text-white text-2xl">🧪</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-center mb-2">Chemistry Lab</h3>
+                    <p class="text-gray-600 text-center mb-4">Conduct virtual experiments safely</p>
+                    <div class="flex justify-between items-center">
+                        <span class="bg-quest-green/20 text-quest-green px-3 py-1 rounded-full text-sm">8 Lessons</span>
+                        <span class="text-quest-orange font-bold">+150 XP</span>
+                    </div>
+                </div>
+
+                <!-- History Lesson -->
+                <div class="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all hover:scale-105 cursor-pointer" onclick="openLessonModal('history')">
+                    <div class="w-16 h-16 bg-quest-purple rounded-full flex items-center justify-center mb-4 mx-auto">
+                        <span class="text-white text-2xl">🏛️</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-center mb-2">Time Travelers</h3>
+                    <p class="text-gray-600 text-center mb-4">Journey through historical events</p>
+                    <div class="flex justify-between items-center">
+                        <span class="bg-quest-purple/20 text-quest-purple px-3 py-1 rounded-full text-sm">15 Lessons</span>
+                        <span class="text-quest-orange font-bold">+300 XP</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Community Section -->
+        <div id="community" class="section hidden">
+            <h2 class="text-4xl font-bold gradient-text mb-8">👥 Learning Community</h2>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Discussion Forums -->
+                <div class="lg:col-span-2 bg-white rounded-2xl p-6 shadow-lg">
+                    <h3 class="text-xl font-bold mb-4">💬 Recent Discussions</h3>
+                    <div class="space-y-4">
+                        <div class="p-4 bg-gray-50 rounded-xl">
+                            <div class="flex items-center space-x-3 mb-2">
+                                <div class="w-8 h-8 bg-quest-pink rounded-full flex items-center justify-center">
+                                    <span class="text-white text-sm">J</span>
+                                </div>
+                                <div>
+                                    <div class="font-bold">Jessica K.</div>
+                                    <div class="text-sm text-gray-600">2 hours ago</div>
+                                </div>
+                            </div>
+                            <p class="text-gray-700">"Can someone help me understand quadratic equations? I'm stuck on the homework! 🤔"</p>
+                            <div class="flex items-center space-x-4 mt-3">
+                                <button class="text-quest-blue hover:text-quest-purple transition-colors">👍 5</button>
+                                <button class="text-quest-blue hover:text-quest-purple transition-colors">💬 Reply</button>
+                            </div>
+                        </div>
+                        
+                        <div class="p-4 bg-gray-50 rounded-xl">
+                            <div class="flex items-center space-x-3 mb-2">
+                                <div class="w-8 h-8 bg-quest-green rounded-full flex items-center justify-center">
+                                    <span class="text-white text-sm">M</span>
+                                </div>
+                                <div>
+                                    <div class="font-bold">Marcus T.</div>
+                                    <div class="text-sm text-gray-600">4 hours ago</div>
+                                </div>
+                            </div>
+                            <p class="text-gray-700">"Just finished the Chemistry Lab simulation! The virtual experiments are so cool! 🧪✨"</p>
+                            <div class="flex items-center space-x-4 mt-3">
+                                <button class="text-quest-blue hover:text-quest-purple transition-colors">👍 12</button>
+                                <button class="text-quest-blue hover:text-quest-purple transition-colors">💬 Reply</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6">
+                        <textarea class="w-full p-4 border border-gray-200 rounded-xl resize-none" rows="3" placeholder="Share your thoughts or ask a question..."></textarea>
+                        <button class="mt-3 bg-gradient-to-r from-quest-purple to-quest-pink text-white px-6 py-2 rounded-xl hover:shadow-lg transition-all">Post Message</button>
+                    </div>
+                </div>
+
+                <!-- Study Groups -->
+                <div class="bg-white rounded-2xl p-6 shadow-lg">
+                    <h3 class="text-xl font-bold mb-4">👥 Study Groups</h3>
+                    <div class="space-y-4">
+                        <div class="p-4 bg-quest-blue/10 rounded-xl">
+                            <h4 class="font-bold text-quest-blue">Math Masters</h4>
+                            <p class="text-sm text-gray-600 mb-2">Algebra & Geometry focus</p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm">👥 8 members</span>
+                                <button class="bg-quest-blue text-white px-3 py-1 rounded-full text-sm hover:bg-quest-purple transition-colors">Join</button>
+                            </div>
+                        </div>
+                        
+                        <div class="p-4 bg-quest-green/10 rounded-xl">
+                            <h4 class="font-bold text-quest-green">Science Squad</h4>
+                            <p class="text-sm text-gray-600 mb-2">Biology & Chemistry</p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm">👥 12 members</span>
+                                <button class="bg-quest-green text-white px-3 py-1 rounded-full text-sm hover:bg-quest-purple transition-colors">Join</button>
+                            </div>
+                        </div>
+                        
+                        <div class="p-4 bg-quest-purple/10 rounded-xl">
+                            <h4 class="font-bold text-quest-purple">History Hunters</h4>
+                            <p class="text-sm text-gray-600 mb-2">World History exploration</p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm">👥 6 members</span>
+                                <button class="bg-quest-purple text-white px-3 py-1 rounded-full text-sm hover:bg-quest-pink transition-colors">Join</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button class="w-full mt-4 bg-gray-100 text-gray-700 py-3 rounded-xl hover:bg-gray-200 transition-colors">Create New Group</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Games Section -->
+        <div id="games" class="section hidden">
+            <h2 class="text-4xl font-bold gradient-text mb-8">🎮 Learning Games</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Math Game -->
+                <div class="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all hover:scale-105 cursor-pointer" onclick="playGame('math')">
+                    <div class="w-16 h-16 bg-gradient-to-r from-quest-blue to-quest-purple rounded-full flex items-center justify-center mb-4 mx-auto">
+                        <span class="text-white text-2xl">🧮</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-center mb-2">Number Ninja</h3>
+                    <p class="text-gray-600 text-center mb-4">Slice through math problems with lightning speed!</p>
+                    <div class="text-center">
+                        <span class="bg-quest-orange/20 text-quest-orange px-4 py-2 rounded-full font-bold">Play Now</span>
+                    </div>
+                </div>
+
+                <!-- Word Game -->
+                <div class="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all hover:scale-105 cursor-pointer" onclick="playGame('word')">
+                    <div class="w-16 h-16 bg-gradient-to-r from-quest-pink to-quest-red rounded-full flex items-center justify-center mb-4 mx-auto">
+                        <span class="text-white text-2xl">📝</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-center mb-2">Word Wizard</h3>
+                    <p class="text-gray-600 text-center mb-4">Cast spells with vocabulary and grammar!</p>
+                    <div class="text-center">
+                        <span class="bg-quest-orange/20 text-quest-orange px-4 py-2 rounded-full font-bold">Play Now</span>
+                    </div>
+                </div>
+
+                <!-- Science Game -->
+                <div class="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all hover:scale-105 cursor-pointer" onclick="playGame('science')">
+                    <div class="w-16 h-16 bg-gradient-to-r from-quest-green to-quest-blue rounded-full flex items-center justify-center mb-4 mx-auto">
+                        <span class="text-white text-2xl">⚗️</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-center mb-2">Lab Explorer</h3>
+                    <p class="text-gray-600 text-center mb-4">Discover scientific mysteries through experiments!</p>
+                    <div class="text-center">
+                        <span class="bg-quest-orange/20 text-quest-orange px-4 py-2 rounded-full font-bold">Play Now</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mini Game Demo -->
+            <div id="gameDemo" class="mt-12 bg-white rounded-2xl p-8 shadow-lg hidden">
+                <h3 class="text-2xl font-bold text-center mb-6">🧮 Number Ninja Challenge</h3>
+                <div class="text-center mb-6">
+                    <div class="text-4xl font-bold mb-4" id="mathProblem">7 × 8 = ?</div>
+                    <div class="grid grid-cols-2 gap-4 max-w-md mx-auto">
+                        <button onclick="checkAnswer(56)" class="bg-quest-blue text-white py-4 rounded-xl text-xl hover:bg-quest-purple transition-colors">56</button>
+                        <button onclick="checkAnswer(54)" class="bg-quest-blue text-white py-4 rounded-xl text-xl hover:bg-quest-purple transition-colors">54</button>
+                        <button onclick="checkAnswer(48)" class="bg-quest-blue text-white py-4 rounded-xl text-xl hover:bg-quest-purple transition-colors">48</button>
+                        <button onclick="checkAnswer(63)" class="bg-quest-blue text-white py-4 rounded-xl text-xl hover:bg-quest-purple transition-colors">63</button>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <div class="text-lg mb-2">Score: <span id="gameScore" class="font-bold text-quest-orange">0</span></div>
+                    <div class="text-sm text-gray-600">Time: <span id="gameTime" class="font-bold">30</span>s</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-2xl p-8 max-w-md w-full mx-4">
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 bg-gradient-to-r from-quest-purple to-quest-pink rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span class="text-white text-2xl">🚀</span>
+                </div>
+                <h2 class="text-3xl font-bold gradient-text mb-2">Welcome to LearnQuest!</h2>
+                <p class="text-gray-600">Sign in to start your learning adventure</p>
+            </div>
+            
+            <form id="loginForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-2">Email</label>
+                    <input type="email" id="loginEmail" class="w-full p-3 border border-gray-300 rounded-xl focus:border-quest-purple focus:outline-none" placeholder="Enter your email" required>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-2">Password</label>
+                    <input type="password" id="loginPassword" class="w-full p-3 border border-gray-300 rounded-xl focus:border-quest-purple focus:outline-none" placeholder="Enter your password" required>
+                </div>
+                
+                <button type="submit" class="w-full bg-gradient-to-r from-quest-purple to-quest-pink text-white py-3 rounded-xl hover:shadow-lg transition-all font-bold">
+                    Start Learning Adventure! 🚀
+                </button>
+            </form>
+            
+            <div class="mt-6 p-4 bg-quest-blue/10 rounded-xl">
+                <h4 class="font-bold text-quest-blue mb-2">Demo Accounts:</h4>
+                <div class="text-sm space-y-1">
+                    <div><strong>alex@student.com</strong> / learn123</div>
+                    <div><strong>sarah@student.com</strong> / study456</div>
+                    <div><strong>mike@student.com</strong> / quest789</div>
+                </div>
+            </div>
+            
+            <div id="loginError" class="mt-4 p-3 bg-red-100 text-red-700 rounded-xl hidden">
+                Invalid email or password. Please try again!
+            </div>
+        </div>
+    </div>
+
+    <!-- Quiz Modal -->
+    <div id="quizModal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-2xl p-8 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <div>
+                    <h3 class="text-2xl font-bold" id="quizTitle">Quiz Title</h3>
+                    <div class="flex items-center space-x-4 mt-2">
+                        <span class="text-sm text-gray-600">Question <span id="currentQuestion">1</span> of <span id="totalQuestions">5</span></span>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-quest-orange">⏱️</span>
+                            <span class="font-bold text-quest-orange" id="quizTimer">60</span>
+                        </div>
+                    </div>
+                </div>
+                <button onclick="closeQuizModal()" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+            </div>
+            
+            <div id="quizContent" class="mb-6">
+                <!-- Quiz content will be inserted here -->
+            </div>
+            
+            <div class="flex justify-between items-center">
+                <div class="text-sm text-gray-600">
+                    Score: <span id="quizScore" class="font-bold text-quest-purple">0</span> / <span id="maxScore">100</span>
+                </div>
+                <div class="space-x-3">
+                    <button id="prevBtn" onclick="previousQuestion()" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-xl hover:bg-gray-300 transition-colors hidden">Previous</button>
+                    <button id="nextBtn" onclick="nextQuestion()" class="bg-gradient-to-r from-quest-purple to-quest-pink text-white px-6 py-2 rounded-xl hover:shadow-lg transition-all">Next Question</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lesson Modal -->
+    <div id="lessonModal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-2xl p-8 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold" id="lessonTitle">Interactive Lesson</h3>
+                <button onclick="closeLessonModal()" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+            </div>
+            
+            <div id="lessonContent" class="mb-6">
+                <!-- Lesson content will be inserted here -->
+            </div>
+            
+            <div class="flex justify-between items-center">
+                <button onclick="closeLessonModal()" class="bg-gray-200 text-gray-700 px-6 py-3 rounded-xl hover:bg-gray-300 transition-colors">Close</button>
+                <button onclick="completeLesson()" class="bg-gradient-to-r from-quest-purple to-quest-pink text-white px-6 py-3 rounded-xl hover:shadow-lg transition-all">Complete Lesson</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentPoints = 1250;
+        let gameScore = 0;
+        let gameTimer = null;
+        let timeLeft = 30;
+        let isLoggedIn = false;
+        let currentUser = null;
+        let currentQuiz = null;
+        let currentQuestionIndex = 0;
+        let quizScore = 0;
+        let quizTimer = null;
+        let quizTimeLeft = 60;
+        let userAnswers = [];
+
+        // Demo credentials
+        const demoUsers = {
+            'alex@student.com': { password: 'learn123', name: 'Alex', points: 1250, avatar: '👤' },
+            'sarah@student.com': { password: 'study456', name: 'Sarah', points: 2450, avatar: '👩' },
+            'mike@student.com': { password: 'quest789', name: 'Mike', points: 1890, avatar: '👨' }
+        };
+
+        // Quiz data structure
+        const quizData = {
+            elementary: {
+                title: "Elementary Quizzes (K-5)",
+                quizzes: [
+                    {
+                        id: 'elem_math_basic',
+                        title: 'Basic Math',
+                        subject: 'Mathematics',
+                        difficulty: 'Easy',
+                        timeLimit: 300,
+                        questions: [
+                            {
+                                question: "What is 5 + 3?",
+                                options: ["6", "7", "8", "9"],
+                                correct: 2,
+                                explanation: "5 + 3 = 8. When we add 5 and 3 together, we get 8."
+                            },
+                            {
+                                question: "Which shape has 3 sides?",
+                                options: ["Circle", "Square", "Triangle", "Rectangle"],
+                                correct: 2,
+                                explanation: "A triangle has exactly 3 sides and 3 corners."
+                            },
+                            {
+                                question: "What comes after 19?",
+                                options: ["18", "20", "21", "22"],
+                                correct: 1,
+                                explanation: "After 19 comes 20. This is the next number in counting order."
+                            },
+                            {
+                                question: "How many days are in a week?",
+                                options: ["5", "6", "7", "8"],
+                                correct: 2,
+                                explanation: "There are 7 days in a week: Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, and Sunday."
+                            },
+                            {
+                                question: "What is 10 - 4?",
+                                options: ["5", "6", "7", "8"],
+                                correct: 1,
+                                explanation: "10 - 4 = 6. When we subtract 4 from 10, we get 6."
+                            }
+                        ]
+                    },
+                    {
+                        id: 'elem_science_animals',
+                        title: 'Animal Friends',
+                        subject: 'Science',
+                        difficulty: 'Easy',
+                        timeLimit: 240,
+                        questions: [
+                            {
+                                question: "Which animal is known as the king of the jungle?",
+                                options: ["Tiger", "Lion", "Elephant", "Bear"],
+                                correct: 1,
+                                explanation: "The lion is often called the king of the jungle because of its strength and majesty."
+                            },
+                            {
+                                question: "What do bees make?",
+                                options: ["Milk", "Honey", "Butter", "Cheese"],
+                                correct: 1,
+                                explanation: "Bees make honey from flower nectar. They store it in their hives."
+                            },
+                            {
+                                question: "Which animal can fly?",
+                                options: ["Dog", "Cat", "Bird", "Fish"],
+                                correct: 2,
+                                explanation: "Birds have wings and can fly through the air."
+                            }
+                        ]
+                    }
+                ]
+            },
+            highschool: {
+                title: "High School Quizzes (9-12)",
+                quizzes: [
+                    {
+                        id: 'hs_algebra',
+                        title: 'Algebra Fundamentals',
+                        subject: 'Mathematics',
+                        difficulty: 'Medium',
+                        timeLimit: 600,
+                        questions: [
+                            {
+                                question: "Solve for x: 2x + 5 = 13",
+                                options: ["x = 3", "x = 4", "x = 5", "x = 6"],
+                                correct: 1,
+                                explanation: "2x + 5 = 13. Subtract 5: 2x = 8. Divide by 2: x = 4."
+                            },
+                            {
+                                question: "What is the slope of the line y = 3x + 2?",
+                                options: ["2", "3", "5", "1"],
+                                correct: 1,
+                                explanation: "In the equation y = mx + b, m is the slope. Here, m = 3."
+                            },
+                            {
+                                question: "Factor: x² - 9",
+                                options: ["(x-3)(x-3)", "(x+3)(x+3)", "(x-3)(x+3)", "Cannot be factored"],
+                                correct: 2,
+                                explanation: "x² - 9 is a difference of squares: x² - 3² = (x-3)(x+3)."
+                            }
+                        ]
+                    },
+                    {
+                        id: 'hs_chemistry',
+                        title: 'Chemical Reactions',
+                        subject: 'Chemistry',
+                        difficulty: 'Medium',
+                        timeLimit: 480,
+                        questions: [
+                            {
+                                question: "What is the chemical symbol for water?",
+                                options: ["H₂O", "CO₂", "NaCl", "O₂"],
+                                correct: 0,
+                                explanation: "Water is H₂O - two hydrogen atoms bonded to one oxygen atom."
+                            },
+                            {
+                                question: "What type of reaction is: 2H₂ + O₂ → 2H₂O?",
+                                options: ["Decomposition", "Synthesis", "Single replacement", "Double replacement"],
+                                correct: 1,
+                                explanation: "This is a synthesis reaction where simpler substances combine to form a more complex compound."
+                            }
+                        ]
+                    }
+                ]
+            },
+            seniorhigh: {
+                title: "Senior High Quizzes (11-12)",
+                quizzes: [
+                    {
+                        id: 'sh_calculus',
+                        title: 'Introduction to Calculus',
+                        subject: 'Mathematics',
+                        difficulty: 'Hard',
+                        timeLimit: 720,
+                        questions: [
+                            {
+                                question: "What is the derivative of x²?",
+                                options: ["x", "2x", "x²", "2x²"],
+                                correct: 1,
+                                explanation: "Using the power rule: d/dx(x²) = 2x¹ = 2x."
+                            },
+                            {
+                                question: "What is the limit of (x² - 1)/(x - 1) as x approaches 1?",
+                                options: ["0", "1", "2", "undefined"],
+                                correct: 2,
+                                explanation: "Factor: (x² - 1)/(x - 1) = (x+1)(x-1)/(x-1) = x+1. As x→1, limit = 2."
+                            }
+                        ]
+                    }
+                ]
+            },
+            college: {
+                title: "College Level Quizzes",
+                quizzes: [
+                    {
+                        id: 'col_physics',
+                        title: 'Quantum Mechanics Basics',
+                        subject: 'Physics',
+                        difficulty: 'Expert',
+                        timeLimit: 900,
+                        questions: [
+                            {
+                                question: "What is Planck's constant approximately equal to?",
+                                options: ["6.63 × 10⁻³⁴ J·s", "3.00 × 10⁸ m/s", "9.81 m/s²", "1.60 × 10⁻¹⁹ C"],
+                                correct: 0,
+                                explanation: "Planck's constant h ≈ 6.63 × 10⁻³⁴ J·s, fundamental to quantum mechanics."
+                            },
+                            {
+                                question: "According to Heisenberg's uncertainty principle, what cannot be simultaneously determined with perfect accuracy?",
+                                options: ["Energy and time", "Position and momentum", "Mass and velocity", "Charge and spin"],
+                                correct: 1,
+                                explanation: "Heisenberg's uncertainty principle states that position and momentum cannot both be precisely determined simultaneously."
+                            }
+                        ]
+                    }
+                ]
+            }
+        };
+
+        function showSection(sectionName) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.add('hidden');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionName).classList.remove('hidden');
+            
+            // Update nav buttons
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('text-quest-purple', 'font-bold');
+                btn.classList.add('text-gray-700');
+            });
+            
+            event.target.classList.remove('text-gray-700');
+            event.target.classList.add('text-quest-purple', 'font-bold');
+        }
+
+        function startLesson(subject) {
+            showSection('lessons');
+            setTimeout(() => {
+                openLessonModal(subject);
+            }, 300);
+        }
+
+        function openLessonModal(subject) {
+            const modal = document.getElementById('lessonModal');
+            const title = document.getElementById('lessonTitle');
+            const content = document.getElementById('lessonContent');
+            
+            const lessons = {
+                math: {
+                    title: '📐 Algebra Adventures: Solving Equations',
+                    content: `
+                        <div class="space-y-6">
+                            <div class="bg-quest-blue/10 p-6 rounded-xl">
+                                <h4 class="text-lg font-bold mb-3">🎯 Learning Objective</h4>
+                                <p>Master the art of solving linear equations using balance and inverse operations!</p>
+                            </div>
+                            
+                            <div class="bg-white border-2 border-quest-purple/20 p-6 rounded-xl">
+                                <h4 class="text-lg font-bold mb-3">Interactive Example</h4>
+                                <div class="text-center">
+                                    <div class="text-2xl mb-4">2x + 5 = 13</div>
+                                    <div class="space-y-2">
+                                        <div class="bg-gray-100 p-3 rounded">Step 1: Subtract 5 from both sides</div>
+                                        <div class="bg-gray-100 p-3 rounded">2x = 8</div>
+                                        <div class="bg-gray-100 p-3 rounded">Step 2: Divide both sides by 2</div>
+                                        <div class="bg-quest-green/20 p-3 rounded font-bold">x = 4 ✅</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-quest-orange/10 p-6 rounded-xl">
+                                <h4 class="text-lg font-bold mb-3">🎮 Try It Yourself!</h4>
+                                <p>Solve: 3x - 7 = 14</p>
+                                <input type="text" placeholder="Enter your answer..." class="w-full mt-3 p-3 border border-gray-300 rounded-xl">
+                                <button class="mt-3 bg-quest-orange text-white px-4 py-2 rounded-xl hover:bg-quest-red transition-colors">Check Answer</button>
+                            </div>
+                        </div>
+                    `
+                },
+                science: {
+                    title: '🧪 Chemistry Lab: Molecular Structures',
+                    content: `
+                        <div class="space-y-6">
+                            <div class="bg-quest-green/10 p-6 rounded-xl">
+                                <h4 class="text-lg font-bold mb-3">🔬 Lab Objective</h4>
+                                <p>Explore how atoms bond together to form molecules in this virtual chemistry lab!</p>
+                            </div>
+                            
+                            <div class="bg-white border-2 border-quest-green/20 p-6 rounded-xl text-center">
+                                <h4 class="text-lg font-bold mb-3">Virtual Molecule Builder</h4>
+                                <div class="grid grid-cols-3 gap-4 mb-4">
+                                    <div class="bg-red-100 p-4 rounded-full">
+                                        <div class="text-2xl">⚫</div>
+                                        <div class="text-sm">Carbon</div>
+                                    </div>
+                                    <div class="bg-blue-100 p-4 rounded-full">
+                                        <div class="text-2xl">🔵</div>
+                                        <div class="text-sm">Hydrogen</div>
+                                    </div>
+                                    <div class="bg-green-100 p-4 rounded-full">
+                                        <div class="text-2xl">🟢</div>
+                                        <div class="text-sm">Oxygen</div>
+                                    </div>
+                                </div>
+                                <div class="text-lg mb-4">Build a water molecule (H₂O)!</div>
+                                <button class="bg-quest-green text-white px-6 py-3 rounded-xl hover:bg-quest-blue transition-colors">Start Building</button>
+                            </div>
+                        </div>
+                    `
+                },
+                history: {
+                    title: '🏛️ Time Travelers: Ancient Civilizations',
+                    content: `
+                        <div class="space-y-6">
+                            <div class="bg-quest-purple/10 p-6 rounded-xl">
+                                <h4 class="text-lg font-bold mb-3">🕰️ Time Travel Mission</h4>
+                                <p>Journey back to ancient Egypt and discover the secrets of pyramid construction!</p>
+                            </div>
+                            
+                            <div class="bg-white border-2 border-quest-purple/20 p-6 rounded-xl">
+                                <h4 class="text-lg font-bold mb-3">Interactive Timeline</h4>
+                                <div class="space-y-3">
+                                    <div class="flex items-center space-x-4 p-3 bg-yellow-50 rounded-xl">
+                                        <span class="text-2xl">🏺</span>
+                                        <div>
+                                            <div class="font-bold">3100 BCE</div>
+                                            <div class="text-sm">Unification of Upper and Lower Egypt</div>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center space-x-4 p-3 bg-yellow-50 rounded-xl">
+                                        <span class="text-2xl">🔺</span>
+                                        <div>
+                                            <div class="font-bold">2580 BCE</div>
+                                            <div class="text-sm">Great Pyramid of Giza constructed</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-quest-orange/10 p-6 rounded-xl text-center">
+                                <h4 class="text-lg font-bold mb-3">🎭 Role-Play Challenge</h4>
+                                <p class="mb-4">You are an ancient Egyptian architect. Design your pyramid!</p>
+                                <button class="bg-quest-purple text-white px-6 py-3 rounded-xl hover:bg-quest-pink transition-colors">Enter Ancient Egypt</button>
+                            </div>
+                        </div>
+                    `
+                }
+            };
+            
+            title.textContent = lessons[subject].title;
+            content.innerHTML = lessons[subject].content;
+            modal.classList.remove('hidden');
+            modal.querySelector('.bg-white').classList.add('bounce-in');
+        }
+
+        function closeLessonModal() {
+            document.getElementById('lessonModal').classList.add('hidden');
+        }
+
+        function completeLesson() {
+            currentPoints += 200;
+            document.getElementById('points').textContent = currentPoints.toLocaleString();
+            
+            // Show completion animation
+            const modal = document.getElementById('lessonModal');
+            modal.innerHTML = `
+                <div class="bg-white rounded-2xl p-8 max-w-md w-full mx-4 text-center bounce-in">
+                    <div class="text-6xl mb-4">🎉</div>
+                    <h3 class="text-2xl font-bold mb-4 gradient-text">Lesson Complete!</h3>
+                    <p class="text-gray-600 mb-6">Amazing work! You earned 200 XP and unlocked a new badge!</p>
+                    <div class="bg-quest-orange/20 p-4 rounded-xl mb-6">
+                        <div class="text-3xl mb-2">🏆</div>
+                        <div class="font-bold text-quest-orange">Knowledge Seeker Badge</div>
+                    </div>
+                    <button onclick="closeLessonModal()" class="bg-gradient-to-r from-quest-purple to-quest-pink text-white px-8 py-3 rounded-xl hover:shadow-lg transition-all">Continue Learning</button>
+                </div>
+            `;
+            
+            setTimeout(() => {
+                closeLessonModal();
+                showSection('dashboard');
+            }, 3000);
+        }
+
+        function playGame(gameType) {
+            if (gameType === 'math') {
+                document.getElementById('gameDemo').classList.remove('hidden');
+                startMathGame();
+            }
+        }
+
+        function startMathGame() {
+            gameScore = 0;
+            timeLeft = 30;
+            document.getElementById('gameScore').textContent = gameScore;
+            document.getElementById('gameTime').textContent = timeLeft;
+            
+            generateMathProblem();
+            
+            gameTimer = setInterval(() => {
+                timeLeft--;
+                document.getElementById('gameTime').textContent = timeLeft;
+                
+                if (timeLeft <= 0) {
+                    endGame();
+                }
+            }, 1000);
+        }
+
+        function generateMathProblem() {
+            const num1 = Math.floor(Math.random() * 12) + 1;
+            const num2 = Math.floor(Math.random() * 12) + 1;
+            const correctAnswer = num1 * num2;
+            
+            document.getElementById('mathProblem').textContent = `${num1} × ${num2} = ?`;
+            
+            // Generate answer options
+            const options = [correctAnswer];
+            while (options.length < 4) {
+                const wrongAnswer = correctAnswer + Math.floor(Math.random() * 20) - 10;
+                if (wrongAnswer > 0 && !options.includes(wrongAnswer)) {
+                    options.push(wrongAnswer);
+                }
+            }
+            
+            // Shuffle options
+            options.sort(() => Math.random() - 0.5);
+            
+            // Update buttons
+            const buttons = document.querySelectorAll('#gameDemo button');
+            buttons.forEach((button, index) => {
+                if (index < 4) {
+                    button.textContent = options[index];
+                    button.onclick = () => checkAnswer(options[index], correctAnswer);
+                }
+            });
+        }
+
+        function checkAnswer(selected, correct = null) {
+            if (correct === null) {
+                // For the initial demo problem (7 × 8 = 56)
+                correct = 56;
+            }
+            
+            if (selected === correct) {
+                gameScore += 10;
+                document.getElementById('gameScore').textContent = gameScore;
+                
+                // Show success feedback
+                const problem = document.getElementById('mathProblem');
+                problem.textContent = '✅ Correct!';
+                problem.style.color = '#10B981';
+                
+                setTimeout(() => {
+                    problem.style.color = '';
+                    if (timeLeft > 0) {
+                        generateMathProblem();
+                    }
+                }, 1000);
+            } else {
+                // Show error feedback
+                const problem = document.getElementById('mathProblem');
+                const originalText = problem.textContent;
+                problem.textContent = '❌ Try again!';
+                problem.style.color = '#EF4444';
+                
+                setTimeout(() => {
+                    problem.textContent = originalText;
+                    problem.style.color = '';
+                }, 1000);
+            }
+        }
+
+        function endGame() {
+            clearInterval(gameTimer);
+            currentPoints += gameScore;
+            document.getElementById('points').textContent = currentPoints.toLocaleString();
+            
+            const gameDemo = document.getElementById('gameDemo');
+            gameDemo.innerHTML = `
+                <div class="text-center bounce-in">
+                    <div class="text-6xl mb-4">🎮</div>
+                    <h3 class="text-2xl font-bold mb-4 gradient-text">Game Over!</h3>
+                    <p class="text-gray-600 mb-4">Final Score: <span class="font-bold text-quest-orange">${gameScore}</span></p>
+                    <p class="text-gray-600 mb-6">You earned ${gameScore} XP!</p>
+                    <button onclick="document.getElementById('gameDemo').classList.add('hidden')" class="bg-gradient-to-r from-quest-purple to-quest-pink text-white px-6 py-3 rounded-xl hover:shadow-lg transition-all">Play Again</button>
+                </div>
+            `;
+        }
+
+        // Login functionality
+        function login(email, password) {
+            const user = demoUsers[email];
+            if (user && user.password === password) {
+                isLoggedIn = true;
+                currentUser = { email, ...user };
+                currentPoints = user.points;
+                
+                // Update UI
+                document.getElementById('points').textContent = currentPoints.toLocaleString();
+                document.getElementById('userName').textContent = user.name;
+                document.getElementById('userEmail').textContent = email;
+                document.getElementById('userAvatar').innerHTML = `<span class="text-white text-sm">${user.avatar}</span>`;
+                document.getElementById('welcomeMessage').textContent = `Welcome back, ${user.name}! 🎉`;
+                
+                // Hide login modal
+                document.getElementById('loginModal').classList.add('hidden');
+                
+                // Show success message
+                showLoginSuccess();
+                
+                return true;
+            }
+            return false;
+        }
+
+        function logout() {
+            isLoggedIn = false;
+            currentUser = null;
+            currentPoints = 0;
+            
+            // Reset UI
+            document.getElementById('points').textContent = '0';
+            document.getElementById('userName').textContent = 'Guest';
+            document.getElementById('userEmail').textContent = '';
+            document.getElementById('userAvatar').innerHTML = '<span class="text-white text-sm">👤</span>';
+            document.getElementById('welcomeMessage').textContent = 'Welcome to LearnQuest! 🎉';
+            
+            // Show login modal
+            document.getElementById('loginModal').classList.remove('hidden');
+            
+            // Clear form
+            document.getElementById('loginForm').reset();
+            document.getElementById('loginError').classList.add('hidden');
+        }
+
+        function showLoginSuccess() {
+            const successDiv = document.createElement('div');
+            successDiv.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-xl shadow-lg z-50 bounce-in';
+            successDiv.innerHTML = `
+                <div class="flex items-center space-x-2">
+                    <span>✅</span>
+                    <span>Welcome back, ${currentUser.name}!</span>
+                </div>
+            `;
+            document.body.appendChild(successDiv);
+            
+            setTimeout(() => {
+                successDiv.remove();
+            }, 3000);
+        }
+
+        // Handle login form submission
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            if (login(email, password)) {
+                document.getElementById('loginError').classList.add('hidden');
+            } else {
+                document.getElementById('loginError').classList.remove('hidden');
+            }
+        });
+
+        // Quiz functions
+        function selectQuizLevel(level) {
+            const levelData = quizData[level];
+            document.getElementById('selectedLevelTitle').textContent = levelData.title;
+            
+            const quizList = document.getElementById('quizList');
+            quizList.innerHTML = '';
+            
+            levelData.quizzes.forEach(quiz => {
+                const difficultyColors = {
+                    'Easy': 'quest-green',
+                    'Medium': 'quest-blue', 
+                    'Hard': 'quest-purple',
+                    'Expert': 'quest-red'
+                };
+                
+                const color = difficultyColors[quiz.difficulty] || 'quest-blue';
+                
+                const quizCard = document.createElement('div');
+                quizCard.className = 'bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all hover:scale-105 cursor-pointer';
+                quizCard.onclick = () => startQuiz(quiz);
+                
+                quizCard.innerHTML = `
+                    <div class="w-16 h-16 bg-gradient-to-r from-${color} to-quest-pink rounded-full flex items-center justify-center mb-4 mx-auto">
+                        <span class="text-white text-2xl">📝</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-center mb-2">${quiz.title}</h3>
+                    <p class="text-gray-600 text-center mb-4">${quiz.subject} • ${quiz.questions.length} Questions</p>
+                    <div class="flex justify-between items-center">
+                        <span class="bg-${color}/20 text-${color} px-3 py-1 rounded-full text-sm">${quiz.difficulty}</span>
+                        <span class="text-quest-orange font-bold">${Math.floor(quiz.timeLimit/60)} min</span>
+                    </div>
+                `;
+                
+                quizList.appendChild(quizCard);
+            });
+            
+            document.getElementById('quizCategories').classList.remove('hidden');
+        }
+
+        function startQuiz(quiz) {
+            currentQuiz = quiz;
+            currentQuestionIndex = 0;
+            quizScore = 0;
+            userAnswers = [];
+            quizTimeLeft = quiz.timeLimit;
+            
+            document.getElementById('quizTitle').textContent = quiz.title;
+            document.getElementById('totalQuestions').textContent = quiz.questions.length;
+            document.getElementById('maxScore').textContent = quiz.questions.length * 20;
+            document.getElementById('quizScore').textContent = '0';
+            
+            showQuestion();
+            startQuizTimer();
+            document.getElementById('quizModal').classList.remove('hidden');
+        }
+
+        function showQuestion() {
+            const question = currentQuiz.questions[currentQuestionIndex];
+            document.getElementById('currentQuestion').textContent = currentQuestionIndex + 1;
+            
+            const content = document.getElementById('quizContent');
+            content.innerHTML = `
+                <div class="space-y-6">
+                    <div class="bg-quest-blue/10 p-6 rounded-xl">
+                        <h4 class="text-lg font-bold mb-4">${question.question}</h4>
+                        <div class="space-y-3">
+                            ${question.options.map((option, index) => `
+                                <label class="flex items-center space-x-3 p-4 bg-white rounded-xl border-2 border-gray-200 hover:border-quest-purple cursor-pointer transition-colors">
+                                    <input type="radio" name="answer" value="${index}" class="text-quest-purple">
+                                    <span class="flex-1">${option}</span>
+                                </label>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Update navigation buttons
+            document.getElementById('prevBtn').classList.toggle('hidden', currentQuestionIndex === 0);
+            const nextBtn = document.getElementById('nextBtn');
+            nextBtn.textContent = currentQuestionIndex === currentQuiz.questions.length - 1 ? 'Finish Quiz' : 'Next Question';
+        }
+
+        function nextQuestion() {
+            const selectedAnswer = document.querySelector('input[name="answer"]:checked');
+            if (!selectedAnswer) {
+                alert('Please select an answer before continuing!');
+                return;
+            }
+            
+            const answerIndex = parseInt(selectedAnswer.value);
+            userAnswers[currentQuestionIndex] = answerIndex;
+            
+            // Check if answer is correct
+            if (answerIndex === currentQuiz.questions[currentQuestionIndex].correct) {
+                quizScore += 20;
+                document.getElementById('quizScore').textContent = quizScore;
+            }
+            
+            if (currentQuestionIndex < currentQuiz.questions.length - 1) {
+                currentQuestionIndex++;
+                showQuestion();
+            } else {
+                finishQuiz();
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                showQuestion();
+                
+                // Restore previous answer if exists
+                if (userAnswers[currentQuestionIndex] !== undefined) {
+                    const radio = document.querySelector(`input[name="answer"][value="${userAnswers[currentQuestionIndex]}"]`);
+                    if (radio) radio.checked = true;
+                }
+            }
+        }
+
+        function startQuizTimer() {
+            document.getElementById('quizTimer').textContent = Math.floor(quizTimeLeft / 60) + ':' + (quizTimeLeft % 60).toString().padStart(2, '0');
+            
+            quizTimer = setInterval(() => {
+                quizTimeLeft--;
+                const minutes = Math.floor(quizTimeLeft / 60);
+                const seconds = quizTimeLeft % 60;
+                document.getElementById('quizTimer').textContent = minutes + ':' + seconds.toString().padStart(2, '0');
+                
+                if (quizTimeLeft <= 0) {
+                    finishQuiz();
+                }
+            }, 1000);
+        }
+
+        function finishQuiz() {
+            clearInterval(quizTimer);
+            
+            const percentage = Math.round((quizScore / (currentQuiz.questions.length * 20)) * 100);
+            const earnedPoints = Math.floor(quizScore * 2);
+            currentPoints += earnedPoints;
+            document.getElementById('points').textContent = currentPoints.toLocaleString();
+            
+            // Show results
+            const modal = document.getElementById('quizModal');
+            modal.innerHTML = `
+                <div class="bg-white rounded-2xl p-8 max-w-2xl w-full mx-4 text-center bounce-in">
+                    <div class="text-6xl mb-4">${percentage >= 80 ? '🎉' : percentage >= 60 ? '👍' : '📚'}</div>
+                    <h3 class="text-3xl font-bold mb-4 gradient-text">Quiz Complete!</h3>
+                    <div class="grid grid-cols-2 gap-6 mb-6">
+                        <div class="bg-quest-blue/10 p-4 rounded-xl">
+                            <div class="text-2xl font-bold text-quest-blue">${quizScore}</div>
+                            <div class="text-gray-600">Final Score</div>
+                        </div>
+                        <div class="bg-quest-green/10 p-4 rounded-xl">
+                            <div class="text-2xl font-bold text-quest-green">${percentage}%</div>
+                            <div class="text-gray-600">Accuracy</div>
+                        </div>
+                    </div>
+                    <div class="bg-quest-orange/20 p-4 rounded-xl mb-6">
+                        <div class="text-lg font-bold text-quest-orange">+${earnedPoints} XP Earned!</div>
+                    </div>
+                    <div class="space-x-3">
+                        <button onclick="showQuizReview()" class="bg-gray-200 text-gray-700 px-6 py-3 rounded-xl hover:bg-gray-300 transition-colors">Review Answers</button>
+                        <button onclick="closeQuizModal()" class="bg-gradient-to-r from-quest-purple to-quest-pink text-white px-6 py-3 rounded-xl hover:shadow-lg transition-all">Continue Learning</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function showQuizReview() {
+            const modal = document.getElementById('quizModal');
+            let reviewHTML = `
+                <div class="bg-white rounded-2xl p-8 max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-2xl font-bold">Quiz Review: ${currentQuiz.title}</h3>
+                        <button onclick="closeQuizModal()" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+                    </div>
+                    <div class="space-y-6">
+            `;
+            
+            currentQuiz.questions.forEach((question, index) => {
+                const userAnswer = userAnswers[index];
+                const isCorrect = userAnswer === question.correct;
+                
+                reviewHTML += `
+                    <div class="border rounded-xl p-6 ${isCorrect ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'}">
+                        <div class="flex items-start space-x-3 mb-4">
+                            <span class="text-2xl">${isCorrect ? '✅' : '❌'}</span>
+                            <div class="flex-1">
+                                <h4 class="font-bold mb-2">Question ${index + 1}: ${question.question}</h4>
+                                <div class="space-y-2">
+                                    <div class="text-sm">
+                                        <span class="font-semibold">Your answer:</span> 
+                                        <span class="${isCorrect ? 'text-green-600' : 'text-red-600'}">${question.options[userAnswer] || 'No answer'}</span>
+                                    </div>
+                                    ${!isCorrect ? `
+                                        <div class="text-sm">
+                                            <span class="font-semibold">Correct answer:</span> 
+                                            <span class="text-green-600">${question.options[question.correct]}</span>
+                                        </div>
+                                    ` : ''}
+                                    <div class="text-sm text-gray-600 bg-white p-3 rounded-lg">
+                                        <span class="font-semibold">Explanation:</span> ${question.explanation}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            reviewHTML += `
+                    </div>
+                    <div class="mt-6 text-center">
+                        <button onclick="closeQuizModal()" class="bg-gradient-to-r from-quest-purple to-quest-pink text-white px-8 py-3 rounded-xl hover:shadow-lg transition-all">Close Review</button>
+                    </div>
+                </div>
+            `;
+            
+            modal.innerHTML = reviewHTML;
+        }
+
+        function closeQuizModal() {
+            document.getElementById('quizModal').classList.add('hidden');
+            clearInterval(quizTimer);
+            currentQuiz = null;
+            currentQuestionIndex = 0;
+            quizScore = 0;
+            userAnswers = [];
+        }
+
+        // Initialize dashboard view
+        showSection('dashboard');
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96eb6ebae642ce65',t:'MTc1NTEyMTg3My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
